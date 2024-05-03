@@ -3,6 +3,8 @@ class Game {
     this.canvas = document.getElementById("gameCanvas");
     this.ctx = this.canvas.getContext("2d");
     this.marioY = 200;
+    this.jumping = false;
+    this.jumpingVelocity = 0;
   }
 
   play() {
@@ -12,16 +14,13 @@ class Game {
     }, 33);
 
     document.onkeydown = (event) => {
-        if (event.keyCode === 32) {
-            this.marioY = 100;
-        } 
-    }
-
-    document.onkeyup = (event) => {
-        if (event.keyCode === 32) {
-            this.marioY = 200;
+      if (event.keyCode === 32) {
+        if (this.jumping === false) {
+          this.jumping = true;
+          this.jump();
         }
-    }
+      }
+    };
   }
 
   resetBackground() {
@@ -36,6 +35,24 @@ class Game {
     // draw a red rectangle
     this.ctx.fillStyle = "red";
     this.ctx.fillRect(50, this.marioY, 25, 50);
+  }
+
+  jump() {
+    this.jumpingVelocity = -12;
+    const jumpInterval = setInterval(() => {
+      console.log("Jumping now!");
+      this.jumpingVelocity += 1;
+      this.marioY += this.jumpingVelocity;
+      if (this.marioY === 200) {
+        clearInterval(jumpInterval);
+        this.resetJump();
+      }
+    }, 33);
+  }
+
+  resetJump() {
+    this.jumping = false;
+    this.jumpingVelocity = 0;
   }
 }
 

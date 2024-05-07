@@ -2,7 +2,8 @@ class Game {
   constructor() {
     this.canvas = document.getElementById("gameCanvas");
     this.ctx = this.canvas.getContext("2d");
-    this.mario = new Mario();
+    this.mario = new Mario(this);
+    this.fireballs = [];
   }
 
   play() {
@@ -30,7 +31,7 @@ class Game {
 }
 
 class Mario {
-  constructor() {
+  constructor(game) {
     this.y = 200;
     this.x = 50;
     this.xVelocity = 0;
@@ -38,32 +39,34 @@ class Mario {
     this.yVelocity = 0;
     this.movingRight = false;
     this.movingLeft = false;
+    this.game = game;
 
     document.onkeydown = (event) => {
+      if (event.keyCode == 77) {
+        this.fireball();
+      }
+
       if (event.keyCode === 32) {
         if (this.jumping === false) {
           this.jump();
         }
       }
 
-      if (event.keyCode === 39) {
-        if (this.jumping) return;
+      if (event.keyCode === 68) {
         this.movingRight = true;
       }
 
-      if (event.keyCode === 37) {
-        if (this.jumping) return;
-
+      if (event.keyCode === 65) {
         this.movingLeft = true;
       }
     };
 
     document.onkeyup = (event) => {
-      if (event.keyCode === 39) {
+      if (event.keyCode === 68) {
         this.movingRight = false;
       }
 
-      if (event.keyCode === 37) {
+      if (event.keyCode === 65) {
         this.movingLeft = false;
       }
     };
@@ -87,17 +90,25 @@ class Mario {
     }
 
     if (this.movingRight) {
-      this.xVelocity += 2;
+      if (this.jumping) {
+        this.xVelocity += 0.1;
+      } else {
+        this.xVelocity += 2;
+      }
       this.xVelocity = Math.min(4, this.xVelocity);
     }
 
     if (this.movingLeft) {
-      this.xVelocity -= 2;
+      if (this.jumping) {
+        this.xVelocity -= 0.1;
+      } else {
+        this.xVelocity -= 2;
+      }
       this.xVelocity = Math.max(-4, this.xVelocity);
     }
 
     if (!this.jumping) {
-      this.xVelocity *= 0.9;
+      this.xVelocity *= 0.7;
     }
 
     this.x += this.xVelocity;
@@ -106,6 +117,28 @@ class Mario {
   jump() {
     this.yVelocity = -12;
     this.jumping = true;
+  }
+
+  fireball() {
+    const fireball = new Fireball(this.x, this.y);
+    this.game.fireballs.push(fireball);
+  }
+}
+
+class Fireball {
+  constructor(x, y) {
+    this.x = x + 32;
+    this.y = y + 16;
+  }
+
+  draw(ctx) {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, 2, 0, 2 * Math.PI);
+    ctx.fillStyle = "orange";
+    ctx.strokeStyle = "orange";
+    ctx.lineWidth = 1;
+    ctx.fill();
+    ctx.stroke();
   }
 }
 

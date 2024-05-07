@@ -2,34 +2,14 @@ class Game {
   constructor() {
     this.canvas = document.getElementById("gameCanvas");
     this.ctx = this.canvas.getContext("2d");
-    this.marioY = 200;
-    this.marioX = 50;
-    this.marioXVelocity = 0;
-    this.jumping = false;
-    this.jumpingVelocity = 0;
+    this.mario = new Mario();
   }
 
   play() {
     setInterval(() => {
       this.resetBackground();
-      this.drawMario();
+      this.mario.draw(this.ctx);
     }, 33);
-
-    document.onkeydown = (event) => {
-      if (event.keyCode === 32) {
-        if (this.jumping === false) {
-          this.jumping = true;
-          this.jump();
-        }
-      }
-
-      if (event.keyCode === 39) {
-        this.marioXVelocity += 5;
-      }
-      if (event.keyCode === 37) {
-        this.marioXVelocity -= 5;
-      }
-    };
   }
 
   resetBackground() {
@@ -43,28 +23,89 @@ class Game {
     this.ctx.fillRect(0, 232, this.canvas.width, this.canvas.height - 232);
   }
 
-  drawMario() {
-    const marioImage = document.getElementById("mario");
-    this.marioX += this.marioXVelocity;
-    this.ctx.drawImage(marioImage, this.marioX, this.marioY, 32, 32);
-  }
-
-  jump() {
-    this.jumpingVelocity = -12;
-    const jumpInterval = setInterval(() => {
-      console.log("Jumping now!");
-      this.jumpingVelocity += 1;
-      this.marioY += this.jumpingVelocity;
-      if (this.marioY === 200) {
-        clearInterval(jumpInterval);
-        this.resetJump();
-      }
-    }, 33);
-  }
-
   resetJump() {
     this.jumping = false;
     this.jumpingVelocity = 0;
+  }
+}
+
+class Mario {
+  constructor() {
+    this.y = 200;
+    this.x = 50;
+    this.xVelocity = 0;
+    this.jumping = false;
+    this.yVelocity = 0;
+    this.movingRight = false;
+    this.movingLeft = false;
+
+    document.onkeydown = (event) => {
+      if (event.keyCode === 32) {
+        if (this.jumping === false) {
+          this.jump();
+        }
+      }
+
+      if (event.keyCode === 39) {
+        if (this.jumping) return;
+        this.movingRight = true;
+      }
+
+      if (event.keyCode === 37) {
+        if (this.jumping) return;
+
+        this.movingLeft = true;
+      }
+    };
+
+    document.onkeyup = (event) => {
+      if (event.keyCode === 39) {
+        this.movingRight = false;
+      }
+
+      if (event.keyCode === 37) {
+        this.movingLeft = false;
+      }
+    };
+  }
+
+  draw(ctx) {
+    const marioImage = document.getElementById("mario");
+
+    this.update();
+    ctx.drawImage(marioImage, this.x, this.y, 32, 32);
+  }
+
+  update() {
+    if (this.jumping) {
+      this.yVelocity += 1;
+      this.y += this.yVelocity;
+      if (this.y === 200) {
+        this.jumping = false;
+        this.yVelocity = 0;
+      }
+    }
+
+    if (this.movingRight) {
+      this.xVelocity += 2;
+      this.xVelocity = Math.min(4, this.xVelocity);
+    }
+
+    if (this.movingLeft) {
+      this.xVelocity -= 2;
+      this.xVelocity = Math.max(-4, this.xVelocity);
+    }
+
+    if (!this.jumping) {
+      this.xVelocity *= 0.9;
+    }
+
+    this.x += this.xVelocity;
+  }
+
+  jump() {
+    this.yVelocity = -12;
+    this.jumping = true;
   }
 }
 

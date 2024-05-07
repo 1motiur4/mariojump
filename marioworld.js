@@ -28,13 +28,15 @@ class Game {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     // draw the sky
     this.ctx.fillStyle = "lightblue";
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.fillRect(0, 0, this.canvas.width, 200+32);
+
+    this.ctx.fillStyle = "#C4A484"
+    this.ctx.fillRect(0, 232, this.canvas.width, this.canvas.height - 232);
   }
 
   drawMario() {
-    // draw a red rectangle
-    this.ctx.fillStyle = "red";
-    this.ctx.fillRect(50, this.marioY, 25, 50);
+    const marioImage = document.getElementById("mario");
+    this.ctx.drawImage(marioImage, 50, this.marioY, 32, 32);
   }
 
   jump() {

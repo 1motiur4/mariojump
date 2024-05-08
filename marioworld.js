@@ -125,21 +125,24 @@ class Mario {
   }
 
   fireball() {
-    const fireball = new Fireball(this.x, this.y);
+    const fireball = new Fireball(this.x, this.y, this.game);
     this.game.fireballs.push(fireball);
+
+    console.log(this.game.fireballs.length);
   }
 }
 
 class Fireball {
-  constructor(x, y) {
+  constructor(x, y, game) {
     this.x = x + 32;
     this.y = y + 16;
-    this.xVelocity = 5;
+    this.game = game;
+    this.xVelocity = 6;
   }
 
   draw(ctx) {
     ctx.beginPath();
-    ctx.arc(this.x, this.y, 2, 0, 2 * Math.PI);
+    ctx.arc(this.x, this.y, 8, 0, 2 * Math.PI);
     ctx.fillStyle = "orange";
     ctx.strokeStyle = "orange";
     ctx.lineWidth = 1;
@@ -149,6 +152,12 @@ class Fireball {
 
   update() {
     this.x += this.xVelocity;
+    if (this.x > 600) {
+      // this.game.fireballs.shift();
+      this.game.fireballs = this.game.fireballs.filter(
+        (fireball) => fireball != this
+      );
+    }
   }
 }
 

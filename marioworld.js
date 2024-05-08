@@ -9,7 +9,13 @@ class Game {
   play() {
     setInterval(() => {
       this.resetBackground();
+      this.mario.update();
+
       this.mario.draw(this.ctx);
+      this.fireballs.forEach((fireball) => {
+        fireball.update();
+        fireball.draw(this.ctx);
+      });
     }, 33);
   }
 
@@ -75,7 +81,6 @@ class Mario {
   draw(ctx) {
     const marioImage = document.getElementById("mario");
 
-    this.update();
     ctx.drawImage(marioImage, this.x, this.y, 32, 32);
   }
 
@@ -129,6 +134,7 @@ class Fireball {
   constructor(x, y) {
     this.x = x + 32;
     this.y = y + 16;
+    this.xVelocity = 5;
   }
 
   draw(ctx) {
@@ -139,6 +145,10 @@ class Fireball {
     ctx.lineWidth = 1;
     ctx.fill();
     ctx.stroke();
+  }
+
+  update() {
+    this.x += this.xVelocity;
   }
 }
 

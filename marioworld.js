@@ -138,6 +138,9 @@ class Fireball {
     this.y = y + 16;
     this.game = game;
     this.xVelocity = 6;
+    this.yVelocity = 6;
+    this.bounceHeight = 10;
+    this.isAscending = true;
   }
 
   draw(ctx) {
@@ -152,6 +155,23 @@ class Fireball {
 
   update() {
     this.x += this.xVelocity;
+
+    // Bounce behavior
+    if (this.isAscending) {
+      // Fireball is ascending
+      this.y -= this.yVelocity;
+      if (this.y <= 220 - this.bounceHeight) {
+        this.isAscending = false; // Change direction to descending
+      }
+    } else {
+      // Fireball is descending
+      this.y += this.yVelocity;
+      if (this.y >= 220) {
+        this.y = 220; // Prevent the fireball from going below the canvas
+        this.isAscending = true; // Change direction to ascending
+      }
+    }
+
     if (this.x > 600) {
       // this.game.fireballs.shift();
       this.game.fireballs = this.game.fireballs.filter(

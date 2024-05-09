@@ -10,9 +10,11 @@ class Game {
   play() {
     setInterval(() => {
       this.resetBackground();
-      this.mario.update();
 
+      this.mario.update();
       this.mario.draw(this.ctx);
+
+      this.goomba.update();
       this.goomba.draw(this.ctx);
       this.fireballs.forEach((fireball) => {
         fireball.update();
@@ -186,9 +188,15 @@ class Fireball {
 class Goomba {
   constructor(x, y, game) {
     this.y = 205;
-    this.x = 350;
-    this.xVelocity = 0;
+    this.x = this.getRandomInt(200, 580);
+    this.xVelocity = 2;
     this.game = game;
+  }
+
+  getRandomInt(min, max) {
+    const minCeiled = Math.ceil(min);
+    const maxFloored = Math.floor(max);
+    return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled);
   }
 
   draw(ctx) {
@@ -196,7 +204,16 @@ class Goomba {
     ctx.drawImage(goombaImage, this.x, this.y, 32, 32);
   }
 
-  update() {}
+  update() {
+    this.x += this.xVelocity;
+
+    if (this.x >= game.canvas.width - 32) {
+      this.xVelocity *= -1;
+    }
+    if (this.x < 1) {
+      this.xVelocity *= -1;
+    }
+  }
 }
 
 const game = new Game();

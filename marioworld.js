@@ -3,6 +3,7 @@ class Game {
     this.canvas = document.getElementById("gameCanvas");
     this.ctx = this.canvas.getContext("2d");
     this.mario = new Mario(this);
+    this.goomba = new Goomba(this);
     this.fireballs = [];
   }
 
@@ -12,6 +13,7 @@ class Game {
       this.mario.update();
 
       this.mario.draw(this.ctx);
+      this.goomba.draw(this.ctx);
       this.fireballs.forEach((fireball) => {
         fireball.update();
         fireball.draw(this.ctx);
@@ -48,11 +50,12 @@ class Mario {
     this.game = game;
 
     document.onkeydown = (event) => {
-      if (event.keyCode == 77) {
+      console.log("keyCode", event.keyCode);
+      if (event.keyCode == 32) {
         this.fireball();
       }
 
-      if (event.keyCode === 32) {
+      if (event.keyCode === 87) {
         if (this.jumping === false) {
           this.jump();
         }
@@ -80,7 +83,6 @@ class Mario {
 
   draw(ctx) {
     const marioImage = document.getElementById("mario");
-
     ctx.drawImage(marioImage, this.x, this.y, 32, 32);
   }
 
@@ -128,7 +130,7 @@ class Mario {
     const fireball = new Fireball(this.x, this.y, this.game);
     this.game.fireballs.push(fireball);
 
-    console.log(this.game.fireballs.length);
+    console.log("Fireballs on screen:", this.game.fireballs.length);
   }
 }
 
@@ -179,6 +181,22 @@ class Fireball {
       );
     }
   }
+}
+
+class Goomba {
+  constructor(x, y, game) {
+    this.y = 205;
+    this.x = 350;
+    this.xVelocity = 0;
+    this.game = game;
+  }
+
+  draw(ctx) {
+    const goombaImage = document.getElementById("goomba");
+    ctx.drawImage(goombaImage, this.x, this.y, 32, 32);
+  }
+
+  update() {}
 }
 
 const game = new Game();

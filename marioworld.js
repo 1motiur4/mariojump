@@ -4,6 +4,7 @@ class Game {
     this.ctx = this.canvas.getContext("2d");
     this.mario = new Mario(this);
     this.goomba = new Goomba(this);
+
     this.fireballs = [];
   }
 
@@ -191,6 +192,7 @@ class Goomba {
     this.x = this.getRandomInt(200, 580);
     this.xVelocity = 2;
     this.game = game;
+    this.alive = true;
   }
 
   getRandomInt(min, max) {
@@ -213,6 +215,21 @@ class Goomba {
     if (this.x < 1) {
       this.xVelocity *= -1;
     }
+  }
+
+  isHit() {
+    this.game.fireballs.forEach((fireball) => {
+      if (
+        this.alive &&
+        fireball.x + 8 > this.x &&
+        fireball.x - 8 < this.x + 32 &&
+        fireball.y + 8 > this.y &&
+        fireball.y - 8 < this.y + 32
+      ) {
+        console.log("is hit!!");
+        this.alive = false;
+      }
+    });
   }
 }
 
